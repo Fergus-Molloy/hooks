@@ -1,4 +1,5 @@
 defmodule Hook.Plugs.Slskd do
+  require Logger
   import Plug.Conn
   import Req.Request
 
@@ -31,15 +32,20 @@ defmodule Hook.Plugs.Slskd do
         {"Title", "Downloaded: #{filename}"}
       ])
 
-    req = if token <> "", do: put_header(req, "Authorization", "Bearer #{token}")
+    Logger.debug("Sending request to ntfy", req: req)
 
-    IO.inspect(req, label: "ntfy req")
+    req = if token != "", do: put_header(req, "Authorization", "Bearer #{token}")
 
-    {:ok, %{status: status}} = Req.request(req)
+    {:ok, %{status: status} = resp} = Req.request(req)
 
-    IO.inspect(status, label: "ntfy response status")
+    if status < 300 && status >= 200 do
+      conn
+      |> send_resp(200, "ok")
+    else
+      Logger.warning("Got non 200 response from ntfy", ntfy_resp: resp)
 
-    conn
-    |> send_resp(200, "ok")
+      conn
+      |> send_resp(500, "Failed to send notification to ntfy, status: #{status}")
+    end
   end
 end
