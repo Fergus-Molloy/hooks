@@ -8,7 +8,7 @@ defmodule Hook.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      {Bandit, plug: Hook.Plugs.Router, scheme: :http, port: 6007}
+      {Bandit, plug: Hook.Plugs.Endpoint, scheme: :http, port: 6007}
       # Starts a worker by calling: Hook.Worker.start_link(arg)
       # {Hook.Worker, arg}
     ]

@@ -11,7 +11,7 @@ defmodule Hook.Plugs.Auth do
     if token == nil do
       conn
     else
-      {_, auth_value} = List.keyfind(headers, "authorization", 0, "")
+      {_, auth_value} = List.keyfind(headers, "authorization", 0, {"", ""})
 
       if !String.ends_with?(auth_value, token) do
         conn |> send_resp(401, "Unauthorized") |> halt()
