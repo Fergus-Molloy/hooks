@@ -18,9 +18,9 @@ permissions:
   contents: read
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
-    name: Build
+    name: Test
     steps:
      # Step: Check out the code.
     - name: Checkout code
@@ -88,3 +88,20 @@ jobs:
     # Step: Execute the tests.
     - name: Run tests
       run: nix develop --command mix test
+
+  build:
+    runs-on: ubuntu-latest
+    name: Build
+    steps:
+     # Step: Check out the code.
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+      # Step: Install nix
+    - name: Install nix
+      uses: cachix/install-nix-action@v27
+      with:
+        github_access_token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Build with Nix
+      run: nix build
