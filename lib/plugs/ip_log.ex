@@ -6,7 +6,7 @@ defmodule Hook.Plugs.IpLog do
     opts
   end
 
-  def call(conn, _opts) do
+  def call(conn, opts) do
     Logger.metadata(client_ip: get_ip(conn))
     conn
   end
